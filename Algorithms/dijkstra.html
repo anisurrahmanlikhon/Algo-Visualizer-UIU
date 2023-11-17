@@ -1,0 +1,236 @@
+<html>
+<!-- Mirrored from rosulek.github.io/vamonos/demos/dijkstra.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <title>Dijkstra's Algorithm</title>
+
+    <meta id="meta" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="../lib/vamonos.css">
+    <link rel="stylesheet" href="../lib/vamonos-demos.css">
+    <script type="text/javascript" src="../lib/vamonos-all.js"></script>
+
+    <link rel="stylesheet" href="../deps/bootstrap.min.css">
+    <link rel="stylesheet" href="../deps/bootstrap-theme.min.css">
+    <script type="text/javascript" src="../deps/bootstrap.min.js"></script>
+
+    <style type="text/css">
+    text.vertex-contents {
+        font-size: .8em;
+    }
+
+    .vertex-ne-label, .vertex-nw-label {
+        font-weight: bold;
+    }
+
+    .vertex-sw-label {
+        font-style: italic;
+        font-size: .8em;
+    }
+
+    path.green {
+        stroke: #92E894;
+    }
+
+    path.red {
+        stroke: #FF7D7D;
+    }
+
+    ellipse.vertex.done {
+        fill: #bbb;
+    }
+
+    body {
+        text-align: center;
+    }
+    </style>
+
+</head><body>
+
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8 panel-default">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Dijkstra's Algorithm
+                    </div>
+                    <div class="row nopadding panel-body">
+                        <div class="col-sm-5 nopadding">
+                            <div id="controls"></div>
+                            <div class="pseudocode-procedures">
+                                <div id="pseudocode-main" title="Dijkstra(G,s):">
+                                    for each vertex u &in; G.V - {s}
+                                        u.d = &#x221E;
+                                        u.pred = null
+                                        u.done = false
+                                    s.d = 0
+                                    Q = G.V
+                                    while Q &ne; &empty;
+                                        u = Q.extractMin()
+                                        u.done = true
+                                        for each v &in; G.Adj[u]
+                                            Relax(u,v)
+                                </div>
+                                <div id="pseudocode-relax" title="Relax(G,u,v):">
+                                    if u.d + G.edge(u,v).w &lt; v.d
+                                        v.d = u.d + G.edge(u,v).w
+                                        v.pred = u
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7 nopadding">
+                            <table class="variable-widgets">
+                                <tr><td><div id="g-var"></div></td>
+                                    <td><div id="graph"></div></td></tr>
+                                <tr><td><div id="q-var"></div></td>
+                                    <td><div id="queue"></div></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+var myviz = new Vamonos.Visualizer({
+    widgets: [
+        new Vamonos.Widget.Controls("controls"),
+
+        new Vamonos.Widget.Queue({
+            container: "queue",
+            varName: "global::Q",
+            showLabel: false,
+            displayOnly: true,
+            cellFormat: function (v) {
+                if (v) {
+                    var d = (v.d == Infinity ? "\u221E" : v.d);
+                    return v.name + " : " + d;
+                }
+                else return "";
+            }
+        }),
+
+        new Vamonos.Widget.Pseudocode("pseudocode-main"),
+
+        new Vamonos.Widget.Pseudocode({
+            container: "pseudocode-relax",
+            breakpoints: "all",
+            procedureName: "relax",
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "g-var",
+            varName: "G",
+            inputVar: true,
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "q-var",
+            varName: "global::Q",
+            displayName: "Q",
+            watching: true,
+        }),
+
+        new Vamonos.Widget.Graph({
+            varName: "G",
+            container: "graph",
+            inputVars: {
+                s: "v0",
+            },
+            vertexLabels: {
+                inner : {
+                    edit: function(vtx){return vtx.name},
+                    display: function(vtx){return vtx.d}
+                },
+                ne    : ["u", "v"],
+                nw    : ["s"],
+            },
+            vertexCssAttributes: {
+                done: true,
+            },
+            edgeLabel: "w",
+            defaultEdgeAttrs: { w: 1 },
+
+            edgeCssAttributes: {
+                green : function(edge){
+                    return (edge.target.pred === edge.source.name)
+                        || (edge.source.pred === edge.target.name)
+                },
+                red   : "u<->v",
+            },
+
+            defaultGraph: new Vamonos.DataStructure.Graph({
+                //directed: true,
+                vertices: [
+                    {id: "v0", x: 17,  y: 10},
+                    {id: "v1", x: 98,  y: 10},
+                    {id: "v2", x: 176, y: 13},
+                    {id: "v3", x: 15,  y: 78},
+                    {id: "v4", x: 100, y: 80},
+                    {id: "v5", x: 182, y: 80},
+                    {id: "v6", x: 15,  y: 138},
+                    {id: "v7", x: 100, y: 140},
+                    {id: "v8", x: 182, y: 140},
+                ],
+                edges: [
+                    {source: 'v0',target: 'v4', w:1},
+                    {source: 'v1',target: 'v2', w:2},
+                    {source: 'v1',target: 'v4', w:5},
+                    {source: 'v3',target: 'v4', w:3},
+                    {source: 'v3',target: 'v6', w:1},
+                    {source: 'v4',target: 'v8', w:10},
+                    {source: 'v5',target: 'v8', w:2},
+                    {source: 'v6',target: 'v7', w:3},
+                    {source: 'v7',target: 'v8', w:2},
+                ]
+            }),
+        }),
+
+    ],
+
+    algorithm: {
+
+        main: function(_){
+            with (this) {
+                G.eachVertex(function(vtx){
+_(1);               u = vtx;
+_(2);               u.d = Infinity;
+_(3);               u.pred = undefined;
+_(4);               u.done = false;
+                });
+
+_(5);           s.d = 0;
+_(6);           global.Q = new Vamonos.DataStructure.Queue({
+                    initialArray: G.getVertices(),
+                    comparator: function(a,b){ return a.d - b.d },
+                });
+
+                while (_(7), !global.Q.isEmpty()) {
+_(8);               u = global.Q.extractMin();
+_(9);               u.done = true;
+                    G.eachNeighbor(u, function(vtx){
+_(10);                  v = vtx;
+_(11);                  relax({u:u,v:v,G:G});
+                    });
+                    v = undefined;
+                }
+                u = undefined;
+            }
+        },
+
+        relax: function(_){
+            with (this) {
+                if (_(1), u.d + G.edge(u,v).w < v.d) {
+_(2);               v.d = u.d + G.edge(u,v).w; global.Q.sort();
+_(3);               v.pred = u.name;
+                }
+            }
+        }
+    }
+});
+
+</script>
+<!-- Mirrored from rosulek.github.io/vamonos/demos/dijkstra.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+</html>

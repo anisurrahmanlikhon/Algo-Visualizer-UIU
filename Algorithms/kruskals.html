@@ -1,0 +1,189 @@
+<html>
+<!-- Mirrored from rosulek.github.io/vamonos/demos/kruskals.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <title>Kruskal's Minimum Spanning Tree</title>
+
+    <meta id="meta" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="../lib/vamonos.css">
+    <link rel="stylesheet" href="../lib/vamonos-demos.css">
+    <script type="text/javascript" src="../lib/vamonos-all.js"></script>
+
+    <link rel="stylesheet" href="../deps/bootstrap.min.css">
+    <link rel="stylesheet" href="../deps/bootstrap-theme.min.css">
+    <script type="text/javascript" src="../deps/bootstrap.min.js"></script>
+
+    <style type="text/css">
+    .vertex-contents {
+        font-size: .8em;
+    }
+
+    .vertex-ne-label, .vertex-nw-label {
+        font-weight: bold;
+    }
+
+    .vertex-sw-label {
+        font-style: italic;
+    }
+
+    body {
+        text-align: center;
+    }
+
+    path.red {
+        stroke: #bf906b;
+    }
+
+    path.blue {
+        stroke: #7a72ff;
+    }
+    </style>
+
+</head><body>
+
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8 panel-default">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Kruskal's Minimum Spanning Tree
+                    </div>
+                    <div class="row nopadding panel-body">
+                        <div class="col-sm-5 nopadding">
+                            <div id="controls"></div>
+                            <div class="pseudocode-procedures">
+                                <div id="pseudocode" title="MST-Kruskal(G)">
+                                    for each v &in; G.V
+                                        Make-Set(v)
+                                    for each (u,v) by weight
+                                        if Find-Set(u) &ne; Find-Set(v)
+                                            Union(u,v)
+                                            (u,v).inMST = True
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7 nopadding">
+                            <table class="variable-widgets">
+                                <tr><td><div id="g-var"></div></td>
+                                    <td><div id="graph"></div></td> </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+var myviz = new Vamonos.Visualizer({
+    widgets: [
+        new Vamonos.Widget.Controls("controls"),
+
+        new Vamonos.Widget.Pseudocode({
+            container: "pseudocode",
+            breakpoints: [3,4],
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "g-var",
+            varName: "G",
+            inputVar: true,
+        }),
+
+        new Vamonos.Widget.Graph({
+            container: "graph",
+            varName: "G",
+            vertexLabels: {
+                inner: function(vtx){ return vtx.name },
+                ne: ['u','v'],
+            },
+            vertexCssAttributes: {
+                group: function(vtx){ if (vtx.group !== undefined) return "group-" + vtx.group; },
+            },
+            edgeCssAttributes: {
+                red  : "u->v",
+                blue : function(edge){ return edge.inMST }
+            },
+            edgeLabel: "w",
+            defaultEdgeAttrs: { w: 1 },
+            defaultGraph: new Vamonos.DataStructure.Graph({
+                directed: false,
+                prefix: "",
+                vertices: [
+                    { x: 10,  y: 187, id: 'v0'  },
+                    { x: 4,   y: 13,  id: 'v1'  },
+                    { x: 87,  y: 156, id: 'v4'  },
+                    { x: 94,  y: 87,  id: 'v5'  },
+                    { x: 207, y: 195, id: 'v6'  },
+                    { x: 160, y: 124, id: 'v7'  },
+                    { x: 223, y: 26,  id: 'v8'  },
+                    { x: 151, y: 53,  id: 'v9'  },
+                    { x: 104, y: 0,   id: 'v10' },
+                ],
+                edges: [
+                    { source: 'v1',  target: 'v0',  w: 6  },
+                    { source: 'v0',  target: 'v6',  w: 9  },
+                    { source: 'v0',  target: 'v4',  w: 3  },
+                    { source: 'v1',  target: 'v0',  w: 6  },
+                    { source: 'v4',  target: 'v1',  w: 4  },
+                    { source: 'v5',  target: 'v1',  w: 2  },
+                    { source: 'v9',  target: 'v1',  w: 5  },
+                    { source: 'v10', target: 'v1',  w: 4  },
+                    { source: 'v0',  target: 'v6',  w: 9  },
+                    { source: 'v7',  target: 'v6',  w: 8  },
+                    { source: 'v6',  target: 'v4',  w: 9  },
+                    { source: 'v6',  target: 'v8',  w: 18 },
+                    { source: 'v0',  target: 'v4',  w: 3  },
+                    { source: 'v4',  target: 'v1',  w: 4  },
+                    { source: 'v4',  target: 'v5',  w: 2  },
+                    { source: 'v6',  target: 'v4',  w: 9  },
+                    { source: 'v4',  target: 'v5',  w: 2  },
+                    { source: 'v5',  target: 'v1',  w: 2  },
+                    { source: 'v5',  target: 'v7',  w: 8  },
+                    { source: 'v5',  target: 'v7',  w: 8  },
+                    { source: 'v7',  target: 'v6',  w: 8  },
+                    { source: 'v8',  target: 'v7',  w: 10 },
+                    { source: 'v7',  target: 'v9',  w: 9  },
+                    { source: 'v6',  target: 'v8',  w: 18 },
+                    { source: 'v8',  target: 'v7',  w: 10 },
+                    { source: 'v8',  target: 'v9',  w: 3  },
+                    { source: 'v8',  target: 'v10', w: 4  },
+                    { source: 'v7',  target: 'v9',  w: 9  },
+                    { source: 'v8',  target: 'v9',  w: 3  },
+                    { source: 'v9',  target: 'v1',  w: 5  },
+                    { source: 'v8',  target: 'v10', w: 4  },
+                    { source: 'v10', target: 'v1',  w: 4  },
+                ]
+            }),
+        })
+    ],
+
+    algorithm: function(_){
+        with (this) {
+            var Set = new Vamonos.DataStructure.DisjointSet({
+                onUpdate: function(vtx){ vtx.group = Set.find(vtx) },
+            });
+            G.eachVertex(function(vtx){
+                _(1); v = vtx;
+                _(2); Set.makeSet(v);
+            });
+            G.eachEdgeBy(function(a,b){ return a.w - b.w }, function(e){
+                _(3);
+                u = G.vertex(e.source.id);
+                v = G.vertex(e.target.id);
+                if (_(4), Set.find(u) !== Set.find(v)) {
+                    _(5); Set.union(u,v);
+                    _(6); e.inMST = true;
+                }
+            });
+            Vamonos.createNColorClasses("group-", Set.numSets());
+        }
+    },
+});
+
+</script>
+
+<!-- Mirrored from rosulek.github.io/vamonos/demos/kruskals.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+</html>

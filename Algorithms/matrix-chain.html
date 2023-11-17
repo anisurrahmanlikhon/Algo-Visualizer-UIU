@@ -1,0 +1,202 @@
+<html>
+<!-- Mirrored from rosulek.github.io/vamonos/demos/matrix-chain.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <title>Matrix-Chain Multiplication</title>
+
+    <meta id="meta" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="../lib/vamonos.css">
+    <link rel="stylesheet" href="../lib/vamonos-demos.css">
+    <script type="text/javascript" src="../lib/vamonos-all.js"></script>
+
+    <link rel="stylesheet" href="../deps/bootstrap.min.css">
+    <link rel="stylesheet" href="../deps/bootstrap-theme.min.css">
+    <script type="text/javascript" src="../deps/bootstrap.min.js"></script>
+
+    <style type="text/css">
+        td.row-i.col-k {
+            background-color: #ada;
+        }
+        td.row-i.col-j, td.row-jplus1.col-k {
+            background-color: #ccc;
+        }
+        body {
+            text-align: center;
+        }
+    </style>
+
+</head><body>
+
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10 panel-default">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Matrix-Chain Multiplication
+                    </div>
+                    <div class="row nopadding panel-body">
+                        <div class="col-sm-6 nopadding">
+                            <div id="controls"></div>
+                            <div class="pseudocode-procedures">
+                                <div id="pseudocode" title="MatrixChainMult(dim):">
+                                    for i = 1 to dim.length - 1
+                                        opt[i,i] = 0
+                                    for l = 2 to dim.length
+                                        for i = 1 to dim.length - l
+                                            k = i + l - 1
+                                            opt[i,k] = &infin;
+                                            for j = i to k-1
+                                                prev = best[i,j] + best[j+1,k]
+                                                val = dim[i-1]*dim[j]*dim[k] + prev
+                                                if opt[i,k] &gt; val
+                                                    opt[i,k] = val
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 nopadding">
+                            <table class="variable-widgets">
+                                <tr><td><div id="dim-var"></div></td>
+                                    <td><div id="dim"></div></td>
+                                </tr>
+                                <tr><td><div id="opt-var"></div></td>
+                                    <td><div id="opt"></div></td>
+                                </tr>
+                                <tr><td><div id="val-var"></div></td>
+                                    <td><div id="val"></div></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</body>
+
+<script type="text/javascript">
+var myviz = new Vamonos.Visualizer({
+    widgets: [
+        new Vamonos.Widget.VarName({
+            container: "val-var",
+            varName: "val",
+        }),
+
+        new Vamonos.Widget.VarDisplay({
+            container: "val",
+            varName: "val",
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "dim-var",
+            varName: "dim",
+            inputVar: true,
+            watchable: false
+        }),
+
+        new Vamonos.Widget.Array({
+            container: "dim",
+            varName: "dim",
+            defaultInput: [4, 3, 5, 1, 2, 7],
+            showIndices: ["i-1", "j", "k"],
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "opt-var",
+            varName: "global::opt",
+            displayName: "opt",
+        }),
+
+        new Vamonos.Widget.Matrix({
+            container: "opt",
+            varName: "global::opt",
+            cssRules: [
+                ["row", ">", "col", "shaded"],
+                ["row", "=", "i", "row-i"],
+                ["col", "=", "j", "col-j"],
+                ["row", "=", "j+1", "row-jplus1"],
+                ["col", "=", "k", "col-k"],
+            ],
+            showIndices: [
+                ["row", "i"],
+                ["row", "j+1"],
+                ["col", "j"],
+                ["col", "k"]
+            ]
+        }),
+
+        new Vamonos.Widget.VarName({
+            container: "sol-var",
+            varName: "global::sol",
+            displayName: "sol",
+            watching: true,
+        }),
+
+        new Vamonos.Widget.Matrix({
+            container: "sol",
+            varName: "global::sol",
+            cssRules: [
+                ["row", ">", "col", "shaded"],
+                ["row", "=", "i", "row-i"],
+                ["col", "=", "j", "col-j"],
+                ["row", "=", "j+1", "row-jplus1"],
+                ["col", "=", "k", "col-k"],
+            ],
+            showIndices: [
+                ["row", "i"],
+                ["row", "j+1"],
+                ["col", "j"],
+                ["col", "k"]
+            ]
+        }),
+
+        new Vamonos.Widget.Pseudocode({
+            container: "pseudocode",
+            breakpoints: [7,10],
+        }),
+
+        new Vamonos.Widget.Controls({
+            container: "controls",
+            //expandWidth: true,
+        }),
+
+    ],
+
+    algorithm: function (_) {
+        with (this) {
+            var l;
+            global.opt = {};
+            global.sol = {};
+            for (var _i = 1; _i < dim.length; _i++) {
+_(1);               i = _i;
+_(2);               global.opt[i] = {}; global.opt[i][i] = 0;
+            }
+            i = null;
+            for (l = 2; l < dim.length; _(3), l++) {
+_(3);           for (var _i = 1; _i < dim.length - l + 1; _i++) {
+_(4);               i = _i;
+_(5);               k = i + l - 1;
+_(6);               global.opt[i][k] = Infinity;
+                    for (var _j = i; _j < k; _j++) {
+_(7);                   j = _j;
+_(8);                   prev = global.opt[i][j] + global.opt[j+1][k];
+_(9);                   val = dim[i-1]*dim[j]*dim[k] + prev;
+_(10);                  if (global.opt[i][k] > val) {
+_(11);                      global.opt[i][k] = val;
+                        }
+                    }
+                    j = null;
+                }
+                i = null;
+            }
+        }
+    },
+
+});
+
+</script>
+
+<!-- Mirrored from rosulek.github.io/vamonos/demos/matrix-chain.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Nov 2023 08:30:34 GMT -->
+</html>
