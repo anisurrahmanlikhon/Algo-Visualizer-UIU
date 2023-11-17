@@ -1,3 +1,2 @@
- 
-<img scr="1.png">
 # Algo-Visualizer-UIU
+<img src="1.png">
